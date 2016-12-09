@@ -44,7 +44,7 @@ module Mastermind
 			direct_match = 0
 			
 			guess.each_with_index do |char, index|
-				if @code[index] == char
+				if code[index] == char
 					direct_match += 1
 					code_copy[index] = nil
 				else

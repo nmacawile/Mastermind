@@ -7,3 +7,5 @@ include Mastermind
 game = Game.new(ComputerPlayer, ComputerPlayer)
 
 game.play
+
+#gets.chomp
