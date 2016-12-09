@@ -1,7 +1,10 @@
 require './helper'
+require './feedback'
 
 module Mastermind
 	class Game
+		include Mastermind::Feedback
+
 		private
 		
 		attr_accessor :code
@@ -32,35 +35,7 @@ module Mastermind
 		
 		def crack_attempt
 			guess = codebreaker.crack_code
-			feedback(guess)
-			
-		end
-		
-		def feedback(guess)
-			code_copy = code.clone
-			indices = []
-			
-			indirect_match = 0
-			direct_match = 0
-			
-			guess.each_with_index do |char, index|
-				if code[index] == char
-					direct_match += 1
-					code_copy[index] = nil
-				else
-					indices << index
-				end
-			end
-			
-			guess.values_at(*indices).each do |char|
-				if code_copy.include?(char)
-					indirect_match += 1
-					code_copy.update_first_match!(char) { nil }
-				end
-			end
-			
-			guesses[guess] = [direct_match, indirect_match]
-
+			guesses[guess] = evaluate(code, guess)			
 		end
 		
 		def print_guesses_with_feedbacks

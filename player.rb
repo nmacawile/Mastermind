@@ -1,3 +1,4 @@
+require './feedback'
 class Player
 	attr_accessor :game
 	
@@ -39,6 +40,8 @@ class HumanPlayer < Player
 end
 
 class ComputerPlayer < Player
+	include Mastermind::Feedback
+
 	attr_accessor :codes
 
 	def initialize(game)
@@ -60,7 +63,7 @@ class ComputerPlayer < Player
 		last_guess = game.guesses.keys.last
 		last_feedback = game.guesses.values.last
 		codes.delete_if do |code|
-			feedback(code, last_guess) != last_feedback
+			evaluate(code, last_guess) != last_feedback
 		end
 	end
 	
@@ -72,32 +75,6 @@ class ComputerPlayer < Player
 			codes[0]
 		end
 		
-	end
-	
-	def feedback(code, guess)
-		code_copy = code.clone
-		indices = []
-		
-		indirect_match = 0
-		direct_match = 0
-		
-		guess.each_with_index do |char, index|
-			if code[index] == char
-				direct_match += 1
-				code_copy[index] = nil
-			else
-				indices << index
-			end
-		end
-		
-		guess.values_at(*indices).each do |char|
-			if code_copy.include?(char)
-				indirect_match += 1
-				code_copy.update_first_match!(char) { nil }
-			end
-		end
-
-		[direct_match, indirect_match]
 	end
 
 end
