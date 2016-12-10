@@ -42,11 +42,14 @@ end
 class ComputerPlayer < Player
 	include Mastermind::Feedback
 
-	attr_accessor :codes
+	attr_accessor :codes, :first_guesses, :matched_chars_count
 
 	def initialize(game)
 		super
-		@codes ||= ('A'..'H').to_a.repeated_permutation(4).to_a
+		@codes = ('A'..'H').to_a.repeated_permutation(4).to_a
+		@first_guesses = []
+		('A'..'H').each_slice(2) { |a, b| @first_guesses << [a, a, b, b] }
+		@matched_chars_count = 0
 	end
 
 	def set_code
@@ -55,21 +58,18 @@ class ComputerPlayer < Player
 		my_code
 	end	
 	
-	def first_guesses
-		@first_guesses ||= [%w(A A B B), %w(C C D D), %w(E E F F), %w(G G H H)]
-	end
-
 	def eliminate_bad_codes
 		last_guess = game.guesses.keys.last
 		last_feedback = game.guesses.values.last
 		codes.delete_if do |code|
 			evaluate(code, last_guess) != last_feedback
 		end
+		self.matched_chars_count += last_feedback.reduce(:+)
 	end
 	
 	def crack_code
 		eliminate_bad_codes unless game.guesses.empty?
-		unless first_guesses.empty?
+		unless first_guesses.empty?	|| matched_chars_count >= 4		
 			first_guesses.shift
 		else
 			codes[0]
