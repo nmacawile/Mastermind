@@ -10,17 +10,17 @@ end
 class HumanPlayer < Player
 	def set_code
 		show_code_guidelines
-		keyboard_input
+		keyboard_input("set secret code")
 	end
 	
 	def crack_code
-		keyboard_input
+		keyboard_input("code")
 	end 
 	
-	def keyboard_input
+	def keyboard_input(prompt)
 		my_code = nil
 		loop do
-			print "Input code: "
+			print "#{prompt}: "
 			input = gets.chomp.upcase.scan(/[A-H]/)
 			my_code = input[0..3]
 			break if my_code.size == 4
@@ -31,11 +31,15 @@ class HumanPlayer < Player
 	end
 	
 	def show_code_guidelines
-		puts "Create the code."
-		puts "Only characters between A and H are accepted."
-		puts "Other characters will be ignored automatically."
-		puts "Only 4 characters from your input will be accepted."
-		puts "Excess characters will be omitted automatically."
+		system("clear")
+		puts "Code creation guidelines: "
+		puts "    Only characters between A and H are accepted, case insensitive."
+		puts "    Only the first four valid characters from your input will be accepted."
+		puts "    Other characters will be ignored automatically."
+	end
+
+	def to_s
+		"You"
 	end
 end
 
@@ -53,9 +57,7 @@ class ComputerPlayer < Player
 	end
 
 	def set_code
-		my_code = Array.new(4) { ('A'..'H').to_a.sample }
-		puts "cough #{my_code.join} cough"
-		my_code
+		Array.new(4) { ('A'..'H').to_a.sample }
 	end	
 	
 	def eliminate_bad_codes
@@ -73,8 +75,10 @@ class ComputerPlayer < Player
 			first_guesses.shift
 		else
 			codes[0]
-		end
-		
+		end		
 	end
 
+	def to_s
+		"Computer"
+	end
 end
