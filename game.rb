@@ -1,5 +1,5 @@
-require './helper'
-require './feedback'
+require_relative 'helper'
+require_relative 'feedback'
 
 module Mastermind
 	class Game

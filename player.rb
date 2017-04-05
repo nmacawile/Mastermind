@@ -1,4 +1,4 @@
-require './feedback'
+require_relative 'feedback'
 class Player
 	attr_accessor :game
 	

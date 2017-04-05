@@ -1,5 +1,5 @@
-require './game'
-require './player'
+require_relative 'game'
+require_relative 'player'
 include Mastermind
 system("clear")
 puts "Game modes: "
